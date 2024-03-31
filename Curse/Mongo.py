@@ -155,7 +155,7 @@ plt.show()
 # plt.gca().xaxis.set_major_locator(mdates.YearLocator())
 # plt.plot(x_loyal, y_loyal)
 # plt.show()
-#
+
 # my_table = PrettyTable()
 # my_table.add_column("Величины",["Максимум", "Минимум", "Среднее", "Медиана", "Эксцесс", "Асимметрия", "Размах"])
 # my_table.add_column("Внешнеторговый оборот", [max_trd_vol, min_trd_vol, trd_mean, trd_mdn, exc, sk, scope])

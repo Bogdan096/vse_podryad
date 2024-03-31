@@ -5,11 +5,11 @@ import itertools
 import logging
 import pandas as pd
 from aiogram.handlers import message
+from entrance_data import api_id, api_hash
 from telethon import TelegramClient, events
-import socks
 import os
 import openpyxl
-import ipdb
+
 
 
 '''брать из файла excel пользователей (2 лист), отправка текстом в чат, gitignore, решение двухфакторного входа
@@ -20,15 +20,15 @@ api_id =  24518272
 api_hash = '7d643a28aaffaab9a34a04f36da6d44c'''
 
 session = "checkout"
-api_id =  21251279
-api_hash = '40aa5369202c4906ad656ad92a8d8427'
+id =  api_id
+hash = api_hash
 unames = []
 spisok = []
 alive_bots = []
 id_list = []
 cl = []
 slovar = {"Боты":cl}
-client = TelegramClient(session, api_id, api_hash,system_version="4.16.30-vxCUSTOM")
+client = TelegramClient(session, id, hash,system_version="4.16.30-vxCUSTOM")
 
 chats = tuple(id_list)
 

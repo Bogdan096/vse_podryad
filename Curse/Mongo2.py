@@ -33,10 +33,16 @@ place = []
 tbl_list = ["DT_NSO_0300_027V1", "DT_NSO_1700_002V1"]
 url = "https://opendata.1212.mn/api/Data?type=xml"
 url2 = "https://opendata.1212.mn/api/Data?type=json"
+# url3 = "https://opendata.1212.mn/api/Itms?type=json"
+# resp = requests.get(url3)
+# soup = BeautifulSoup(resp.text, "lxml").text
+# per_list = soup.split("},{")
+# for elem in per_list:
+#     per
 names = ["Все депозиты", "Депозит до востребования", "Срочные вклады"]
 datas = {
-    "tbl_id": "DT_NSO_0700_021V1" ,
-    "Period": ["2010", "2011"]
+    "tbl_id": "DT_NSO_0700_021V1",
+    # "Period": ["2015"]
 }
 
 
@@ -47,22 +53,24 @@ soup = BeautifulSoup(resp.text, "lxml").text
 soup2 = BeautifulSoup(resp2.text, "lxml")
 
 
-regions = soup2.findAll("scr_eng1")
-for elem in regions:
-    depos_regions.append(elem.text)
-print(len(depos_regions))
+# regions = soup2.findAll("scr_eng1")
+# for elem in regions:
+#     depos_regions.append(elem.text)
+# print(len(depos_regions))
 # print(OrderedSet(depos_regions))
 
-# periods = soup2.findAll("period")
-# for elem in periods:
-#     period.append(elem.text)
-# print(len(period)/11)
-var = soup.split("},{")
+periods = soup2.findAll("period")
+for elem in periods:
+    all_period.append(elem.text)
 
-t_list = ["2011"]
+var = soup.split("},{")
+#
+t_list = ["2022"]
+# t_list = OrderedSet(all_period)[0]
+
 for el in var:
-    period = el.split(":")[2].split(",")[0].replace('"', '')
-    all_period.append(period)
+    # period = el.split(":")[2].split(",")[0].replace('"', '')
+    # all_period.append(period)
     if "2010" in el:
         period = el.split(":")[2].split(",")[0].replace('"', '')
         len_check.append(period)
@@ -70,8 +78,12 @@ for el in var:
         if "Нийт хадгаламж" in el and elem in el:
             srez = el.split(":")[-1].replace('"', '')
             ids.extend((elem, srez))
+            general_list.append(ids)
 
-general_list = ids
+
+print(len(general_list))
+
+# print(general_list)
 # print(len(general_list))
 # print(general_list[len(general_list)-1])
 # print(general_list)
@@ -79,25 +91,18 @@ general_list = ids
 #     for i in range(0, len(general_list)):
 #         try:
 #             if elem in general_list[i]:
-#                 print("BIGCOCK")
+#
 #                 general_list.pop(i)
 #         except (IndexError):
 #             print('')
 # print(general_list)
+# print(len(general_list))
+
 # slovar = {
 #     "Аймаки": depos_regions,
 #     "2011": general_list
 # }
-# df = pd.DataFrame(slovar)
-# print(df)
-# ordnung= OrderedSet(general_list)
-# # n = int((len(ordnung)) / 2)
-# n = 356
-# res = [ordnung[i:i + n] for i in range(0, len(ordnung), n)]
-# for el in res:
-#     print(len(el))
-#     print(el)
-# print(OrderedSet(general_list))
+
 
 
     # if "Нийт хадгаламж" in el:
