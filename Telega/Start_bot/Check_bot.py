@@ -12,48 +12,36 @@ import openpyxl
 
 
 
-'''брать из файла excel пользователей (2 лист), отправка текстом в чат, gitignore, решение двухфакторного входа
+'''брать из файла excel пользователей (2 лист), отправка текстом в чат, gitignore, решение двухфакторного входа, отправка по времени
 
 
 session = "test"
 api_id =  24518272
 api_hash = '7d643a28aaffaab9a34a04f36da6d44c'''
 
-session = "checkout"
-id =  api_id
-hash = api_hash
+session = "test"
 unames = []
 spisok = []
 alive_bots = []
 id_list = []
 cl = []
+pop_cl = []
 slovar = {"Боты":cl}
-client = TelegramClient(session, id, hash,system_version="4.16.30-vxCUSTOM")
-
+client = TelegramClient(session,api_id, api_hash,system_version="4.16.30-vxCUSTOM")
+getter_name = []
 chats = tuple(id_list)
+flag = 0
 
-
-
-# @client.on(events.NewMessage(chats=chats))
-# async def handle_message(event):
-#         sender_username =  await event.get_sender()
-#         unames.clear()
-#         unames.append(sender_username.username)
-#         await make_file(unames)
 
 @client.on(events.NewMessage())
 async def handle_message(event):
-        print("derby")
+        print("message handled")
         sender_username =  await event.get_sender()
-        if sender_username.username in cl:
+        cl.remove(sender_username.first_name)
+        for uname in getter_name:
             username = "Start_Checker_bot"
             entit = await client.get_entity(username)
-            await client.send_message(entity=entit, message=f"{sender_username.username} активен")
-        else:
-            username = "Start_Checker_bot"
-            entit = await client.get_entity(username)
-            await client.send_message(entity=entit, message=f"{sender_username.username} неактивен")
-
+            await client.send_message(entity=entit, message=f"{sender_username.first_name} активен")
 
 
 
@@ -61,23 +49,25 @@ def name_parse():
     print("it works")
     path = os.path.abspath("../Боты и скрипты.xlsx")
     wb = openpyxl.load_workbook(path)
-    ws = wb.active
-    for i in range(0, ws.max_row):
-        for col in ws.iter_cols(1, 3):
+    ws = wb.sheetnames
+    urls = ws[0]
+    getters = ws[1]
+    print("it workz")
+    for i in range(0, wb[urls].max_row):
+        for col in wb[urls].iter_cols(1, 3):
             if "https" in str(col[i].value):
                 spisok.append(str(col[i].value))
+    for i in range(1, wb[getters].max_row):
+        for col in wb[getters].iter_cols(2):
+            getter_name.append(str(col[i].value))
     for link in spisok:
         resp = requests.get(link)
         soup = BeautifulSoup(resp.text, "lxml")
         name = soup.find(class_="tgme_page_title")
         username = soup.find(class_="tgme_page_extra")
         cl.append(name.text)
+        print(cl)
         id_list.append(username.text[4:])
-
-
-
-
-
 
 # async def make_file(spisok: list):
 #     path = os.path.abspath("../Отчет о ботах.xlsx")
@@ -100,23 +90,16 @@ def name_parse():
 
 
 async def handle_messages_to_send():
-    print("message_send")
-    for elem in ["Start_Checker_bot", "Bodyapkin_bot"]:
+
+    for elem in ["Start_Checker_bot","Bodyapkin_bot"]:
         username = elem
         entit = await client.get_entity(username)
         await client.send_message(entity=entit, message= "/start")
 
-
-
-# async def final_message_send():
-#     username = "@Adrien_Order"
-#     entit = await client.get_entity(username)
-#     await client.send_message(entity=entit, file="ff.xlsx")
-
 async def main():
     name_parse()
     await handle_messages_to_send()
-    print("Проверка запущена")
+
     await client.run_until_disconnected()
 
 
