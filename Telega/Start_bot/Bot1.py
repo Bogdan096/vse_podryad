@@ -8,9 +8,9 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token="6579477792:AAFzRL7T-noWx3Ce74mR7qgfE-xCBuzaQYM")
 dp = Dispatcher()
 
-@dp.message(CommandStart())
-async def cmd_start(message:types.Message):
-    await message.answer('Все работает')
+# @dp.message(CommandStart())
+# async def cmd_start(message:types.Message):
+#     await message.answer('Все работает')
 
 # @dp.message(CommandStart())
 # async def cmd_start(message:types.Message):

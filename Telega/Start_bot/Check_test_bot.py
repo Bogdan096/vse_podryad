@@ -1,3 +1,5 @@
+from datetime import datetime, time
+
 import requests
 from bs4 import BeautifulSoup
 import asyncio
@@ -10,22 +12,22 @@ from telethon import TelegramClient, events
 import os
 import openpyxl
 
-
-
+'''очистка файла перед запуском, отправка в тг по списку, запуск по расписанию, старт в 7.30'''
 
 unames = []
 spisok = []
+f_spisok = []
+f2_spisok = []
 alive_bots = []
-id_list = ["Start_Checker_bot", "Bodyapkin_bot" ]
+id_list = []
 cl = []
 pop_cl = []
-getter_name = ["shwedskii_navodchik"]
+getter_name = []
 chats = tuple(id_list)
-flag = 0
-bots_to_check = ['Start_Checker_bot', 'Bodyapkin_bot']
+
 
 # Инициализация клиента
-client = TelegramClient('test_other_variant', api_id, api_hash,system_version="4.16.30-vxCUSTOM")
+client = TelegramClient('test_other_variant1', 24518272, '7d643a28aaffaab9a34a04f36da6d44c',system_version="4.16.30-vxCUSTOM")
 
 def name_parse():
     print("it works")
@@ -34,7 +36,6 @@ def name_parse():
     ws = wb.sheetnames
     urls = ws[0]
     getters = ws[1]
-    print("it workz")
     for i in range(0, wb[urls].max_row):
         for col in wb[urls].iter_cols(1, 3):
             if "https" in str(col[i].value):
@@ -47,10 +48,10 @@ def name_parse():
         soup = BeautifulSoup(resp.text, "lxml")
         name = soup.find(class_="tgme_page_title")
         username = soup.find(class_="tgme_page_extra")
-
         id_list.append(username.text[4:])
 
 async def check_bot(username: str):
+    file = open("Test.txt", "a")
     user = await client.get_input_entity(username)
     await client.send_message(user, '/start')
     respond = False
@@ -60,23 +61,41 @@ async def check_bot(username: str):
             try:
                 response = await conv.wait_event(events.NewMessage())
                 respond = True
-                await client.send_message(entity=getter, message=f"{username} активен")
+                # await client.send_message(entity=getter, message=f"{username} активен")
+                file.write(f"{username} активен\n")
+                print(f"{username} активен")
             except:
-                await client.send_message(entity=getter, message=f"{username} неактивен")
-        return respond
+
+                file.write(f"{username} неактивен\n")
+                print(f"{username} неактивен")
+
+    return respond
+
+
 
 async def main():
+
     print('Начинаем проверку ботов...')
-    # Авторизуемся и запускаем клиент
+
     await client.start()
-    # name_parse()
-    # Проверяем каждого бота
+    name_parse()
+
     for bot_username in id_list:
         await check_bot(bot_username)
 
-    # Отключаемся от Telegram
+
+
     await client.disconnect()
 
-# Запускаем программу
+
+
 with client:
+
     client.loop.run_until_complete(main())
+#     while True:
+#         if datetime.now().hour == 10:
+#             print(datetime.now())
+#             main()
+#             print(datetime.now())
+#             time.sleep(60 * 60 * 3)
+#         time.sleep(60 * 15)

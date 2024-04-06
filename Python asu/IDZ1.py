@@ -32,40 +32,7 @@ from math import sqrt, floor
 # else:
 #     print("Это не анаграма")
 
-#4
-# coords = {}
-# x_cord=[]
-# y_cord=[]
-# rad = []
-# k = int(input("Количество грибов: "))
-# t = int(input("Длительность дождя: "))
-# for i in range(k):
-#     X=randint(0,100)
-#     Y=randint(0,100)
-#     R = randint(1,10)
-#     x_cord.append(X)
-#     y_cord.append(Y)
-#     rad.append(R)
-#
-# for el in range(0, len(x_cord)):
-#     for _ in range(0,t):
-#         if sqrt((x_cord[el+1]-x_cord[el])^2+(y_cord[el+1]-y_cord[el])^2) > (rad[el]+rad[el+1]):
-#             rad[]
-#
-#
-#5
-# positive = []
-# negative = []
-# mylist = [randint(-10,10) for x in range(10)]
-# for elem in mylist:
-#     if elem < 0:
-#         negative.append(elem)
-#     else:
-#         positive.append(elem)
-#
-# print(mylist)
-# print(positive)
-# print(negative)
+
 
 #6
 # sentence = str(input("Введите текст: "))
@@ -92,5 +59,66 @@ from math import sqrt, floor
 # print(nonr)
 
 #8
+# letters_eng = 'abcdefghijklmnopqrstuvwxyz '
+# letters = dict()
+#
+# for pos in range(len(letters_eng)):
+#     letters[letters_eng[pos]] = pos+1
+#
+# word = str(input("Введите строку: "))
+# f_str=""
+# ten_l = []
+# i = 1
+# for sym in word:
+#   ten_l.append(int(sym, 27)-i)
+#   i+=1
+# for el in ten_l:
+#   f_str += list(letters.keys())[el-1]
+# print(f_str)
+#4
+import math
+import random
+
+# Функция для расчета расстояния между двумя точками
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
+def min_contact_time(mushrooms, T):
+    min_time = T
+    n = len(mushrooms)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            distance_between_mushrooms = distance(mushrooms[i]["x"], mushrooms[i]["y"], mushrooms[j]["x"], mushrooms[j]["y"])
+            contact_time = (distance_between_mushrooms - mushrooms[i]["R"] - mushrooms[j]["R"])
+            if contact_time < min_time:
+                min_time = contact_time
+
+    return min_time if min_time >= 0 else 0
+
+# Вычисляем увеличение радиуса каждого гриба после дождя
+def calculate_growth(K, mushrooms, T):
+    actual_growth_time = min_contact_time(mushrooms, T)
+    growth_per_mushroom = [actual_growth_time * 2 for _ in range(K)]
+    return growth_per_mushroom
+
+# Функция для генерации списка грибов со случайными значениями
+def generate_mushrooms(K):
+    return [
+        {
+            "x": random.randint(0,100),  # Случайное значение для x
+            "y": random.randint(0,100),  # Случайное значение для y
+            "R": random.randint(1,10)   # Случайное значение для R
+        } for _ in range(K)
+    ]
+
+K = 3  # Количество грибов
+T = 10  # Время дождя
 
 
+
+# Генерируем случайные данные для грибов
+mushrooms = generate_mushrooms(K)
+
+growth = calculate_growth(K, mushrooms, T)
+print(growth)
