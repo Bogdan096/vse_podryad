@@ -1,0 +1,40 @@
+alterra_morning_bot
+ активен
+alterra_morning_bot
+ неактивен
+reminder_kolerovka_alterra_bot
+ неактивен
+reminder_kolerovka_alterra_bot
+ неактивен
+alterra_poryadok_bot
+ активен
+alterra_poryadok_bot
+ неактивен
+alterra_kolerovka_bot
+ активен
+alterra_kolerovka_bot
+ неактивен
+alterra_AA_bot
+ активен
+alterra_AA_bot
+ неактивен
+alterra_01_bot
+ неактивен
+alterra_01_bot
+ неактивен
+alterra_merchandiser_bot
+ активен
+alterra_merchandiser_bot
+ неактивен
+alterra_showcase_bot
+ неактивен
+alterra_showcase_bot
+ неактивен
+alterra_scout_bot
+ неактивен
+alterra_scout_bot
+ неактивен
+alterra_call_center_bot
+ активен
+alterra_call_center_bot
+ активен
