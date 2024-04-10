@@ -1,18 +1,13 @@
-from datetime import datetime, time
-
+from datetime import datetime, time, timedelta
 import requests
 from bs4 import BeautifulSoup
 import asyncio
-import itertools
-import logging
-import pandas as pd
-from aiogram.handlers import message
 from entrance_data import api_id, api_hash
 from telethon import TelegramClient, events
 import os
 import openpyxl
 
-'''очистка файла перед запуском, отправка в тг по списку, запуск по расписанию, старт в 7.30'''
+
 
 unames = []
 spisok = []
@@ -26,8 +21,7 @@ getter_name = []
 chats = tuple(id_list)
 
 
-# Инициализация клиента
-client = TelegramClient('test_other_variant1', 24518272, '7d643a28aaffaab9a34a04f36da6d44c',system_version="4.16.30-vxCUSTOM")
+client = TelegramClient('test_other_variant1', api_id, api_hash,system_version="4.16.30-vxCUSTOM")
 
 def name_parse():
     print("it works")
@@ -49,53 +43,54 @@ def name_parse():
         name = soup.find(class_="tgme_page_title")
         username = soup.find(class_="tgme_page_extra")
         id_list.append(username.text[4:])
-
 async def check_bot(username: str):
-    file = open("Test.txt", "a")
-    user = await client.get_input_entity(username)
-    await client.send_message(user, '/start')
-    respond = False
-    async with client.conversation(user) as conv:
-        for getters in getter_name:
-            getter = await client.get_entity(getters)
+
+        user = await client.get_input_entity(username)
+        await client.send_message(user, '/start')
+        respond = False
+        async with client.conversation(user) as conv:
             try:
                 response = await conv.wait_event(events.NewMessage())
                 respond = True
-                # await client.send_message(entity=getter, message=f"{username} активен")
-                file.write(f"{username} активен\n")
+                alive_bots.append(f"@{username} активен")
                 print(f"{username} активен")
-            except:
-
-                file.write(f"{username} неактивен\n")
+            except asyncio.TimeoutError:
+                alive_bots.append(f"@{username} неактивен")
                 print(f"{username} неактивен")
+        return respond
 
-    return respond
-
-
+async def from_list_to_reply(adresat: list, stroka:str):
+    for adress_uname in adresat:
+        entity = await client.get_entity(adress_uname)
+        await client.send_message(entity = entity, message= stroka)
 
 async def main():
-
     print('Начинаем проверку ботов...')
-
     await client.start()
     name_parse()
-
     for bot_username in id_list:
         await check_bot(bot_username)
-
-
-
+    for status in alive_bots:
+        await from_list_to_reply(getter_name, status)
     await client.disconnect()
 
+async def time_scheduler(target_time):
+    now = datetime.now()
+    target_datetime = datetime.combine(now.date(), target_time)
+    if now.time() > target_time:
+        target_datetime += timedelta(days=1)
+    await asyncio.sleep((target_datetime - now).total_seconds())
 
+async def daily_job():
+    target_time = time(7, 30)
+    while True:
+        print("Ожидание следующего запуска в 7:30 утра...")
+        await time_scheduler(target_time)
+        await main()
 
-with client:
+        await asyncio.sleep(24*3600 - 1)
 
-    client.loop.run_until_complete(main())
-#     while True:
-#         if datetime.now().hour == 10:
-#             print(datetime.now())
-#             main()
-#             print(datetime.now())
-#             time.sleep(60 * 60 * 3)
-#         time.sleep(60 * 15)
+if __name__ == "__main__":
+    with client:
+        client.loop.create_task(daily_job())
+        client.loop.run_forever()
