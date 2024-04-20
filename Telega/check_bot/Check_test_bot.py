@@ -2,7 +2,7 @@ from datetime import datetime, time, timedelta
 import requests
 from bs4 import BeautifulSoup
 import asyncio
-from entrance_data import api_id, api_hash
+from Telega.check_bot.entrance_data import api_id, api_hash
 from telethon import TelegramClient, events
 import os
 import openpyxl

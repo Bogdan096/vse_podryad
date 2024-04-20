@@ -80,45 +80,37 @@ import math
 import random
 
 # Функция для расчета расстояния между двумя точками
-def distance(x1, y1, x2, y2):
-    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
-
-def min_contact_time(mushrooms, T):
-    min_time = T
-    n = len(mushrooms)
-
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance_between_mushrooms = distance(mushrooms[i]["x"], mushrooms[i]["y"], mushrooms[j]["x"], mushrooms[j]["y"])
-            contact_time = (distance_between_mushrooms - mushrooms[i]["R"] - mushrooms[j]["R"])
-            if contact_time < min_time:
-                min_time = contact_time
-
-    return min_time if min_time >= 0 else 0
-
-# Вычисляем увеличение радиуса каждого гриба после дождя
-def calculate_growth(K, mushrooms, T):
-    actual_growth_time = min_contact_time(mushrooms, T)
-    growth_per_mushroom = [actual_growth_time * 2 for _ in range(K)]
-    return growth_per_mushroom
-
-# Функция для генерации списка грибов со случайными значениями
-def generate_mushrooms(K):
-    return [
-        {
-            "x": random.randint(0,100),  # Случайное значение для x
-            "y": random.randint(0,100),  # Случайное значение для y
-            "R": random.randint(1,10)   # Случайное значение для R
-        } for _ in range(K)
-    ]
-
-K = 3  # Количество грибов
-T = 10  # Время дождя
+from math import sqrt
 
 
+def do_mushrooms_touch(mushroom1, mushroom2):
+    distance = sqrt((mushroom1['x'] - mushroom2['x'])**2 + (mushroom1['y'] - mushroom2['y'])**2)
+    return distance <= (mushroom1['r'] + mushroom2['r'])
 
-# Генерируем случайные данные для грибов
-mushrooms = generate_mushrooms(K)
+def simulate_rain(mushrooms, max_time):
+    time_elapsed = 0
+    while time_elapsed < max_time:
+        # Увеличиваем радиусы шляпок
+        for mushroom in mushrooms:
+            mushroom['r'] += 1
+        # Проверяем на соприкосновение
+        for i in range(len(mushrooms)):
+            for j in range(i + 1, len(mushrooms)):
+                if do_mushrooms_touch(mushrooms[i], mushrooms[j]):
+                    # Если шляпки коснулись, возвращаем результат
+                    return [mushroom['r'] - mushroom['initial_r'] for mushroom in mushrooms]
+        time_elapsed += 1
+    # Если шляпки не соприкоснулись в течение всего дождя, возвращаем результат
+    return [mushroom['r'] - mushroom['initial_r'] for mushroom in mushrooms]
 
-growth = calculate_growth(K, mushrooms, T)
-print(growth)
+# Пример использования функции:
+K = 3  # количество грибов
+T = 10  # время дождя в минутах
+initial_mushrooms = [
+    {'x': 0, 'y': 0, 'r': 2, 'initial_r': 2},  # координаты и начальный радиус 1-го гриба
+    {'x': 5, 'y': 0, 'r': 2, 'initial_r': 2},  # координаты и начальный радиус 2-го гриба
+    {'x': 0, 'y': 5, 'r': 2, 'initial_r': 2},  # координаты и начальный радиус 3-го гриба
+]
+
+growth = simulate_rain(initial_mushrooms, T)
+print("Радиусы шляпок грибов увеличились на следующее количество сантиметров: ", growth)
