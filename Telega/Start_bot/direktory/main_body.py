@@ -90,7 +90,7 @@ async def find_user(message:Message, state: FSMContext):
     new_data= {str(index):name for index,name in enumerate(matches)}
 
     # for k in new_data.keys():
-    #     print(len(str(new_data[k])))
+    #     
     await state.update_data(**new_data)
     '''вывод сообщения с подходящими вариантами по номерам'''
     if matches:
@@ -106,7 +106,7 @@ async def find_user(message:Message, state: FSMContext):
 
 '''хэндлер выбора сотрудника'''
 @router.message(States.chose_num)
-async def zalupa(message:Message, state: FSMContext):
+async def searching(message:Message, state: FSMContext):
     check_list = []
     alpha_list=[]
     answ = message.text
@@ -561,7 +561,7 @@ async def choose_division(message: types.Message, state: FSMContext):
 # Если выбрана секция В
 @router.message(F.text == "В")
 async def choose_division(message: types.Message, state: FSMContext):
-        print("divb")
+       
         strg = await state.get_data()
         dir_path1 = strg["Подотдел"]+"\\Секция В"
         undersec = "\\Секция В"
@@ -634,7 +634,7 @@ async def choose_division(message: types.Message, state: FSMContext):
 # Если выбрана секция Д
 @router.message(F.text == "Д")
 async def choose_division(message: types.Message, state: FSMContext):
-        print("divd")
+        
         strg = await state.get_data()
         dir_path1 = strg["Подотдел"]+"\\Секция Д"
         undersec = "\\Секция Д"
@@ -706,7 +706,7 @@ async def choose_division(message: types.Message, state: FSMContext):
 # Если выбрана секция М
 @router.message(F.text == "М")
 async def choose_division(message: types.Message, state: FSMContext):
-        print("divm")
+        
         strg = await state.get_data()
         dir_path1 = strg["Подотдел"]+"\\Секция М"
         undersec = "\\Секция М"
@@ -778,7 +778,7 @@ async def choose_division(message: types.Message, state: FSMContext):
 # Если выбрана секция С
 @router.message(F.text == "С")
 async def choose_division(message: types.Message, state: FSMContext):
-        print("divac")
+      
         strg = await state.get_data()
         dir_path1 = strg["Подотдел"]+"\\Секция С"
         undersec = "\\Секция С"
